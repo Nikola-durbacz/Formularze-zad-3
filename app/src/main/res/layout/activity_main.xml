@@ -151,6 +151,12 @@
             android:layout_height="wrap_content"
             android:text="@string/order_button"
             android:layout_marginTop="24dp" />
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wyczyść formularz"
+            android:layout_marginTop="12dp" />
 
         <TextView
             android:id="@+id/tvSummary"

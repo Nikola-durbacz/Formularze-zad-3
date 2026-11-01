@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Button btnClear;
+    private FormState savedState;
     private MaterialSwitch swDelivery;
     private EditText etAddress;
     private EditText etName;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void connectViews() {
+        btnClear = findViewById(R.id.btnClear);
         swDelivery = findViewById(R.id.swDelivery);
         etAddress = findViewById(R.id.etAddress);
         etName = findViewById(R.id.etName);
@@ -58,7 +61,40 @@ public class MainActivity extends AppCompatActivity {
         tvSummary = findViewById(R.id.tvSummary);
         btnOrder = findViewById(R.id.btnOrder);
     }
+    private static class FormState {
+        String name;
+        String address;
+        String summary;
 
+        int pizzaPosition;
+        int sizeId;
+        int quantityProgress;
+
+        boolean cheese;
+        boolean ham;
+        boolean mushrooms;
+        boolean delivery;
+    }
+
+    private FormState saveFormState() {
+
+        FormState state = new FormState();
+
+        state.name = etName.getText().toString();
+        state.address = etAddress.getText().toString();
+        state.summary = tvSummary.getText().toString();
+
+        state.pizzaPosition = spPizza.getSelectedItemPosition();
+        state.sizeId = rgSize.getCheckedRadioButtonId();
+        state.quantityProgress = sbQuantity.getProgress();
+
+        state.cheese = cbCheese.isChecked();
+        state.ham = cbHam.isChecked();
+        state.mushrooms = cbMushrooms.isChecked();
+        state.delivery = swDelivery.isChecked();
+
+        return state;
+    }
     private void setupPizzaSpinner() {
         ArrayAdapter<CharSequence> adapter =
                 ArrayAdapter.createFromResource(
@@ -96,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        btnClear.setOnClickListener(v -> showClearConfirmation());
         btnOrder.setOnClickListener(v -> showConfirmation());
         swDelivery.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -106,6 +143,80 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private void clearForm() {
+
+        etName.setText("");
+        etAddress.setText("");
+
+        spPizza.setSelection(0);
+        rgSize.clearCheck();
+
+        cbCheese.setChecked(false);
+        cbHam.setChecked(false);
+        cbMushrooms.setChecked(false);
+
+        sbQuantity.setProgress(0);
+
+        swDelivery.setChecked(false);
+
+        etName.setError(null);
+        etAddress.setError(null);
+
+        tvSummary.setText("");
+    }
+    private void restoreFormState(FormState state) {
+
+        if (state == null) {
+            return;
+        }
+
+        etName.setText(state.name);
+
+        spPizza.setSelection(state.pizzaPosition);
+        rgSize.check(state.sizeId);
+
+        cbCheese.setChecked(state.cheese);
+        cbHam.setChecked(state.ham);
+        cbMushrooms.setChecked(state.mushrooms);
+
+        sbQuantity.setProgress(state.quantityProgress);
+
+        swDelivery.setChecked(state.delivery);
+        etAddress.setText(state.address);
+
+        tvSummary.setText(state.summary);
+
+        etName.setError(null);
+        etAddress.setError(null);
+    }
+    private void showUndoSnackbar() {
+
+        Snackbar.make(
+                findViewById(R.id.main),
+                "Formularz został wyczyszczony",
+                Snackbar.LENGTH_LONG
+        ).setAction("COFNIJ", v -> {
+            restoreFormState(savedState);
+            Toast.makeText(
+                    this,
+                    "Przywrócono poprzednie dane",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }).show();
+    }
+    private void showClearConfirmation() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Wyczyść formularz")
+                .setMessage("Czy na pewno chcesz wyczyścić wszystkie pola?")
+                .setNegativeButton("ANULUJ", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("WYCZYŚĆ", (dialog, which) -> {
+                    savedState = saveFormState();
+                    clearForm();
+                    showUndoSnackbar();
+                })
+                .show();
     }
     private void showConfirmation() {
 
