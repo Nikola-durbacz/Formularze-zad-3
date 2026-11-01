@@ -1,0 +1,27 @@
+
+<resources>
+    <string name="app_name">Zamówienie pizzy</string>
+    <string name="title">Zamów swoją pizzę</string>
+    <string name="name_label">Imię i nazwisko</string>
+    <string name="pizza_label">Wybierz pizzę</string>
+    <string name="size_label">Rozmiar pizzy</string>
+    <string name="toppings_label">Dodatki</string>
+    <string name="quantity_label">Ilość pizz</string>
+    <string name="delivery_label">Dostawa</string>
+    <string name="address_label">Adres dostawy</string>
+    <string name="order_button">ZAMÓW</string>
+    <string name="small">Mała</string>
+    <string name="medium">Średnia</string>
+    <string name="large">Duża</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+
+    <string-array name="pizzas">
+        <item>Wybierz pizzę</item>
+        <item>Margherita</item>
+        <item>Pepperoni</item>
+        <item>Capricciosa</item>
+        <item>Hawajska</item>
+        <item>Serowa</item>
+    </string-array>
+</resources>
